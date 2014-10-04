@@ -1,7 +1,9 @@
+
+<% if logged_in? %> 
 <p class = 'pull-right'>
 [<%= link_to("edit post", edit_post_path(@post))%>]
 </p>
-
+<% end %> 
 <p>
 
   <%= render @post.categories %> 
@@ -17,7 +19,7 @@
 <%= render 'shared/errors', obj: @comment %>  
 
 <%= form_for [@post, @comment] do |form| %> 
-
+<% if logged_in? %> 
   <div class ='control-group'> 
   <%= form.label 'Comments' %> 
   <%= form.text_area :body, placeholder: "Type your comment here"  %> 
@@ -26,23 +28,31 @@
   <%= form.submit "Create Comment", class: "btn btn-primary" %> 
 
   <% end %> 
-
+<% end %> 
 
 <h2>Comments:</h2>
 
 <% @post.comments.each do |c| %> 
-<div class ="row">
-  <div class='spann8 well'>
+  <div class ="row">
+    <% if logged_in? %> 
+    <div class='span0 well text-center'> 
+       <%= link_to vote_post_comment_path(@post, c, vote: true), method: 'post' do %> 
+    <i class = 'icon-arrow-up'></i>
+    <%end%> 
+    </br>
+    <%= c.total_votes %> votes
+  </br> 
+    <%= link_to vote_post_comment_path(@post, c, vote: false), method: 'post' do %> 
+    <i class = 'icon-arrow-down'></i>
+    <%end%> 
+    </div> 
+    <% end %> 
 
-  
-  <en>"<%= c.body %>"</en> 
-  
-
-  </br>
-  <span class = 'quiet'>by </span> <%= link_to c.creator.user_name, ' ' %> 
-  <small>at <%= display_datetime(c.created_at) %></small>
-
+    <div class='spann8 well'>  
+        <en>"<%= c.body %>"</en> 
+      </br>
+    <span class = 'quiet'>by </span> <%= link_to c.creator.user_name, ' ' %> 
+    <small>at <%= display_datetime(c.created_at) %></small>
+    </div>
   </div>
-</div>
-
 <%end %> 
